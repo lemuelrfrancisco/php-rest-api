@@ -10,7 +10,7 @@ class ProductGateway
 
     public function getAll(): array
     {
-        $sql = "SELECT * FROM product";
+        $sql = "SELECT * FROM products";
         $res = $this->conn->query($sql);
         $data = [];
 
@@ -24,7 +24,7 @@ class ProductGateway
 
     public function create(array $data): string
     {
-        $sql = "INSERT INTO product (name, size, is_available) 
+        $sql = "INSERT INTO products (name, size, is_available) 
                 VALUES (:name, :size, :is_available)";
         $res = $this->conn->prepare($sql);
         $res->bindValue(":name", $data["name"], PDO::PARAM_STR);
@@ -37,7 +37,7 @@ class ProductGateway
 
     public function get(string $id)
     {
-        $sql = "SELECT * FROM product WHERE id = :id";
+        $sql = "SELECT * FROM products WHERE id = :id";
         $res = $this->conn->prepare($sql);
         $res->bindValue(":id", $id, PDO::PARAM_INT);
         $res->execute();
@@ -45,6 +45,15 @@ class ProductGateway
 
         if ($data !== false) {
             $data["is_available"] = (bool) $data["is_available"];
+
+            $sqlReviews = "SELECT * FROM reviews where productid = :productid LIMIT 10";
+            $resReviews = $this->conn->prepare($sqlReviews);
+            $resReviews->bindValue(":productid", $id, PDO::PARAM_INT);
+            $resReviews->execute();
+            $dataReviews = $resReviews->fetchAll(PDO::FETCH_ASSOC);
+            if ($dataReviews !== false) {
+                $data['reviews'] = $dataReviews;
+            }
         }
 
         return $data;
@@ -52,7 +61,7 @@ class ProductGateway
 
     public function update(array $current, array $new): int
     {
-        $sql = "UPDATE product SET name = :name, size = :size, is_available = :is_available WHERE id =:id";
+        $sql = "UPDATE products SET name = :name, size = :size, is_available = :is_available WHERE id =:id";
         $res = $this->conn->prepare($sql);
         $res->bindValue(":name", $new["name"] ?? $current["name"], PDO::PARAM_STR);
         $res->bindValue(":size", $new["size"] ?? $current["size"], PDO::PARAM_INT);
@@ -66,7 +75,7 @@ class ProductGateway
 
     public function delete(string $id): int
     {
-        $sql = "DELETE FROM product WHERE id = :id";
+        $sql = "DELETE FROM products WHERE id = :id";
         $res = $this->conn->prepare($sql);
         $res->bindValue(":id", $id, PDO::PARAM_INT);
         $res->execute();
