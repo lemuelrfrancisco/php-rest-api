@@ -26,9 +26,10 @@ class ReviewGateway
         $sql = "INSERT INTO reviews (name, content, rate) 
                 VALUES (:name, :content, :rate)";
         $res = $this->conn->prepare($sql);
+        $res->bindValue(":productid", (bool) $data["productid"], PDO::PARAM_INT);
         $res->bindValue(":name", $data["name"], PDO::PARAM_STR);
-        $res->bindValue(":content", $data["content"] ?? 0, PDO::PARAM_STR_CHAR);
-        $res->bindValue(":rate", (bool) $data["rate"] ?? false, PDO::PARAM_INT);
+        $res->bindValue(":content", $data["content"], PDO::PARAM_STR_CHAR);
+        $res->bindValue(":rate", (bool) $data["rate"], PDO::PARAM_INT);
 
         $res->execute();
         return $this->conn->lastInsertId();

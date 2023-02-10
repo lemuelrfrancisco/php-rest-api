@@ -36,9 +36,31 @@ class UserGateway
 
         $res->execute();
         $data = $res->fetch(PDO::FETCH_ASSOC);
-        unset($data['password']);
-        return $data;
+
+
+        if ($data !== false) {
+
+            $payload_response = array(
+                "sub" => $data["id"],
+                "email" => $data["email"],
+                "firstName" => $data["firstName"],
+                "middleName" => $data["middleName"],
+                "lastName" => $data["lastName"],
+                "contactNo" => $data["contactNo"]
+            );
+            $codec = new JWTCodec;
+            $access_token = $codec->encode($payload_response);
+
+            return ["access_token" => $access_token];
+        }
     }
+
+    // public function test_decode(string $token)
+    // {
+    //     $codec = new JWTCodec;
+    //     $access_token = $codec->decode($token);
+    //     return $access_token;
+    // }
 
     public function changePassword(array $current, array $new): int
     {
