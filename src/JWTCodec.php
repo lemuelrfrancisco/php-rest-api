@@ -13,7 +13,8 @@ class JWTCodec
         $payload = json_encode($payload);
         $payload = $this->base64urlEncode($payload);
 
-        $signature = hash_hmac("sha256", $header . "." . $payload, "357538782F413F4428472B4B6150645367566B59703373367639792442264529", true);
+        $private_key = "357538782F413F4428472B4B6150645367566B59703373367639792442264529";
+        $signature = hash_hmac("sha256", $header . "." . $payload, $private_key, true);
         $signature = $this->base64urlEncode($signature);
 
         return $header . "." . $payload . "." . $signature;
@@ -26,7 +27,8 @@ class JWTCodec
 
         }
 
-        $signature = hash_hmac("sha256", $matches["header"] . "." . $matches["payload"], "357538782F413F4428472B4B6150645367566B59703373367639792442264529", true);
+        $private_key = "357538782F413F4428472B4B6150645367566B59703373367639792442264529";
+        $signature = hash_hmac("sha256", $matches["header"] . "." . $matches["payload"], $private_key, true);
         $signature_from_token = $this->base64UrlDecode($matches["signature"]);
 
         if (!hash_equals($signature, $signature_from_token)) {

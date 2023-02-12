@@ -16,25 +16,12 @@ class UserController
                 case "register":
                     $this->processRegistrationRequest();
                     break;
-
-                //test only
-                // case "decode":
-                //     $this->test_decode("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjUsImVtYWlsIjoidGVzdDJAbWFpbC5jb20iLCJmaXJzdE5hbWUiOiJGaXJzdCBuYW1lIiwibWlkZGxlTmFtZSI6Ik1pZGRsZSBuYW1lIiwibGFzdE5hbWUiOiJMYXN0IE5hbWUiLCJjb250YWN0Tm8iOiIwOTg3NjU0MzIxIn0.kxYiq84mI7xowWJrbk_YVPYZ2_B9IDlQeuZCHhBXloo");
-                //     break;
             }
         } else {
             http_response_code(405);
             header("Allow: POST");
         }
     }
-
-
-    // private function test_decode(string $token)
-    // {
-    //     $codec = new JWTCodec;
-    //     $access_token = $codec->decode($token);
-    //     echo json_encode($access_token);
-    // }
 
     private function processLoginRequest(): void
     {

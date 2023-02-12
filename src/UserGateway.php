@@ -55,13 +55,6 @@ class UserGateway
         }
     }
 
-    // public function test_decode(string $token)
-    // {
-    //     $codec = new JWTCodec;
-    //     $access_token = $codec->decode($token);
-    //     return $access_token;
-    // }
-
     public function changePassword(array $current, array $new): int
     {
         $sql = "UPDATE users SET password = :password";
