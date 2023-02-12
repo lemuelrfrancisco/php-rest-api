@@ -33,7 +33,7 @@ switch ($parts[2]) {
 
         $gateway = new ProductGateway($database);
 
-        $controller = new ProductController($gateway);
+        $controller = new ProductController($gateway, $auth);
         $controller->processRequest($_SERVER["REQUEST_METHOD"], $id);
         break;
 

@@ -1,7 +1,7 @@
 <?php
 class ProductController
 {
-    public function __construct(private ProductGateway $gateway)
+    public function __construct(private ProductGateway $gateway, private Auth $auth)
     {
     }
     public function processRequest(string $method, ?string $id): void
@@ -70,15 +70,46 @@ class ProductController
                 break;
 
             case "POST":
-                $data = (array) json_decode(file_get_contents("php://input"), true);
+                // $data = (array) json_decode(file_get_contents("php://input"), true);
+                $data = $_POST;
                 $errors = $this->getValidationErrors(($data));
+                if (!empty($_FILES['file']['name'])) {
+                    $file_name = $_FILES['file']['name'];
+                    $temp_path = $_FILES['file']['tmp_name'];
+                    $file_size = $_FILES['file']['size'];
+                    $temp = explode(".", $_FILES["file"]["name"]);
+                    $new_file_name = round(microtime(true)) . '.' . end($temp);
+
+                    $upload_path = "uploads/";
+                    $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
+
+                    $valid_extensions = array("jpeg", "jpg", "png", "gif");
+                    if (in_array($file_ext, $valid_extensions)) {
+                        if (!file_exists($upload_path . $new_file_name)) {
+                            if ($file_size < 5000000 && empty($errors)) {
+                                $data['image'] = $upload_path . $new_file_name;
+                                move_uploaded_file($temp_path, $upload_path . $new_file_name);
+                            } else {
+                                $errors[] = "File size is too large, maximum file size is 5Mb";
+                            }
+                        } else {
+                            $errors[] = "file already exists in upload folder";
+                        }
+                    } else {
+                        $errors[] = "Invalid file format";
+                    }
+                } else {
+                    if (empty($file_name)) {
+                        $errors[] = "Image is required";
+                    }
+                }
 
                 if (!empty($errors)) {
                     http_response_code(422);
                     echo json_encode(["errors" => $errors]);
                     break;
                 }
-
+                $data['userid'] = $this->auth->getUserID();
                 $id = $this->gateway->create($data);
 
                 http_response_code(201);
@@ -98,13 +129,17 @@ class ProductController
     {
         $errors = [];
         if ($is_new && empty($data["name"])) {
-            $errors[] = "name is requred";
+            $errors[] = "name is required";
         }
 
         if (array_key_exists("size", $data)) {
             if (filter_var($data["size"], FILTER_VALIDATE_INT) === false) {
                 $errors[] = "size must be an integer";
             }
+        }
+
+        if ($is_new && empty($data["price"])) {
+            $errors[] = "price is required";
         }
 
         return $errors;
