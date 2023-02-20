@@ -6,6 +6,7 @@ set_error_handler("ErrorHandler::handleError");
 set_exception_handler("ErrorHandler::handleException");
 
 header("Content-type: application/json; charset=UTF-8");
+
 $parts = explode("/", $_SERVER["REQUEST_URI"]);
 
 // $http_authorization = $_SERVER["HTTP_AUTHORIZATION"];
@@ -19,6 +20,8 @@ $user_gateway = new UserGateway($database);
 
 $codec = new JWTCodec;
 
+header("Access-Control-Allow-Origin: *");
+
 $auth = new Auth($user_gateway, $codec);
 if ($parts[2] !== 'user' && $_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -26,7 +29,6 @@ if ($parts[2] !== 'user' && $_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 }
-
 switch ($parts[2]) {
     case 'products':
         $id = $parts[3] ?? null;
