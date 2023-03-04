@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 07, 2023 at 03:34 PM
+-- Generation Time: Mar 04, 2023 at 08:58 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -29,9 +29,12 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
+  `userid` int(11) NOT NULL,
   `name` varchar(128) NOT NULL,
   `description` text NOT NULL,
   `size` int(11) NOT NULL DEFAULT 0,
+  `price` varchar(11) NOT NULL,
+  `image` varchar(256) NOT NULL,
   `is_available` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -39,11 +42,14 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `size`, `is_available`) VALUES
-(1, 'test', '', 55, 1),
-(2, 'New name', '', 57, 0),
-(3, 'product 3', '', 995, 1),
-(4, 'product 3', '', 0, 1);
+INSERT INTO `products` (`id`, `userid`, `name`, `description`, `size`, `price`, `image`, `is_available`) VALUES
+(3, 1, 'burger', '', 999, '1', 'uploads/1676887955.jpg', 1),
+(5, 1, 'Bottle Water', '', 10000, '1', 'uploads/1677908272.jpg', 1),
+(6, 1, 'tea', '', 1, '5', 'uploads/1677912096.jpg', 0),
+(7, 1, 'Chocolate', 'description', 5, '1', 'uploads/1677912218.jpg', 0),
+(8, 1, 'Popcorn', 'Test popcorn', 100000, '1', 'uploads/1677913227.jpg', 1),
+(9, 1, 'Snack', 'Test Snack', 10000, '2', 'uploads/1677913297.jpg', 1),
+(10, 1, 'Coffee', 'Test coffee', 100, '4', 'uploads/1677913344.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -60,13 +66,33 @@ CREATE TABLE `reviews` (
   `datetime_created` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `reviews`
+-- Table structure for table `users`
 --
 
-INSERT INTO `reviews` (`id`, `productid`, `name`, `content`, `rate`, `datetime_created`) VALUES
-(1, 1, 'First name D. Last name', 'Lorem ipsum dolor', '8', '2023-02-07 21:34:26'),
-(2, 1, 'name 2', 'test', '9', '2023-02-07 22:15:08');
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL,
+  `email` varchar(128) NOT NULL,
+  `password` varchar(60) NOT NULL,
+  `firstName` varchar(128) NOT NULL,
+  `middleName` varchar(128) NOT NULL,
+  `lastName` varchar(128) NOT NULL,
+  `contactNo` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `email`, `password`, `firstName`, `middleName`, `lastName`, `contactNo`) VALUES
+(1, 'test@mail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'First name', 'Middle name', 'Last Name', '0987654321'),
+(5, 'test2@mail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'First name', 'Middle name', 'Last Name', '0987654321'),
+(7, 'test3@mail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'First name', 'Middle name', 'Last Name', '0987654321'),
+(17, 'test1@mail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'first', 'middle', 'last', '09123123'),
+(19, 'test4@mail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'first', 'middle', 'last', '12312312'),
+(20, 'test6@mail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'f', 'm', 'l', '0912312321');
 
 --
 -- Indexes for dumped tables
@@ -85,6 +111,13 @@ ALTER TABLE `reviews`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -92,13 +125,19 @@ ALTER TABLE `reviews`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `reviews`
 --
 ALTER TABLE `reviews`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
