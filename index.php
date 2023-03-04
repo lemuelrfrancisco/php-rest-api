@@ -23,7 +23,7 @@ $codec = new JWTCodec;
 header("Access-Control-Allow-Origin: *");
 
 $auth = new Auth($user_gateway, $codec);
-if ($parts[2] !== 'user' && $_SERVER["REQUEST_METHOD"] === "POST") {
+if ($parts[2] !== 'user' && ($_SERVER["REQUEST_METHOD"] === "POST" || $_SERVER["REQUEST_METHOD"] === "DELETE" || $_SERVER["REQUEST_METHOD"] === "PATCH")) {
 
     if (!$auth->authenticateAccessToken()) {
         exit;

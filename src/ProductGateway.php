@@ -24,12 +24,13 @@ class ProductGateway
 
     public function create(array $data): string
     {
-        $sql = "INSERT INTO products (name, size, price, is_available, image, userid) 
-                VALUES (:name, :size, :price, :is_available, :image, :userid)";
+        $sql = "INSERT INTO products (name, size, price, description, is_available, image, userid) 
+                VALUES (:name, :size, :price, :description, :is_available, :image, :userid)";
         $res = $this->conn->prepare($sql);
         $res->bindValue(":name", $data["name"], PDO::PARAM_STR);
         $res->bindValue(":size", $data["size"] ?? 0, PDO::PARAM_INT);
         $res->bindValue(":price", $data["price"], PDO::PARAM_STR);
+        $res->bindValue(":description", $data["description"], PDO::PARAM_STR);
         $res->bindValue(":is_available", (bool) $data["is_available"] ?? false, PDO::PARAM_BOOL);
         $res->bindValue(":image", $data["image"], PDO::PARAM_STR);
         $res->bindValue(":userid", $data["userid"], PDO::PARAM_INT);
